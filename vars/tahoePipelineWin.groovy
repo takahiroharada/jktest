@@ -51,6 +51,7 @@ def executeBuildWin(String projectBranch)
 	        stage("Artifact")
 	        {
 	        	archiveArtifacts artifacts: 'dist/release/**/*'
+                junit 'scripts/*.xml'
 	        }
 	    }
     }
