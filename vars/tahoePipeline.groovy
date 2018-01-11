@@ -25,56 +25,93 @@ def checkOutBranchOrScm(String branchName, String repoName) {
 
 def executeBuildUbuntu(String projectBranch)
 {
-    def retNode = {
-    	node("ubuntu")
-    	{
-	    	stage("Check")
-	        {
-	            checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
-	        }
-	        stage("Build") 
-	        {
-	            try 
-	            {
-	            	sh './scripts/build/macos/buildTahoeMin.sh'
-	            }
-	            finally {
-	            }
-	        }
-	        stage("Test")
-	        {
-	        	sh './dist/release/bin/x86_64/UnitTest64 --gtest_list_tests'
-	        }
-	        stage("Artifact")
-	        {
-	        	archiveArtifacts artifacts: 'dist/release/**/*'
-	        }
-	    }
+	node("ubuntu")
+	{
+    	stage("Check")
+        {
+            checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
+        }
+        stage("Build") 
+        {
+            try 
+            {
+            	sh './scripts/build/macos/buildTahoeMin.sh'
+            }
+            finally {
+            }
+            stash includes: 'dist/**/*', name: 'binaries'
+            stash includes: 'Resources/**/*', name: 'resources'
+            stash includes: 'scripts/**/*', name: 'scripts'
+        }
     }
     return retNode
 }
 
-def executeBuildWin(String projectBranch)
+def executeTestsGpu(String projectBranch)
 {
     def retNode = {
-    	node("win10")
-    	{
-	    	stage("Check")
-	        {
-	        }
-	    }
+        node("ubuntu")
+        {
+            stage("Test")
+            {
+                unstash 'binaries'
+                unstash 'resources'
+                unstash 'scripts'
+
+                sh './scripts/test/macos/tahoeTestsGpu.sh'
+            }
+            stage("Artifact")
+            {
+                archiveArtifacts artifacts: 'dist/release/**/*'
+                junit 'scripts/*.xml'
+            }
+        }
     }
     return retNode
 }
 
-def executeBuilds(String projectBranch)
+def executeTestsCpu(String projectBranch)
+{
+    def retNode = {
+        node("ubuntu")
+        {
+            stage("Test")
+            {
+                unstash 'binaries'
+                unstash 'resources'
+                unstash 'scripts'
+
+                sh './scripts/test/macos/tahoeTestsCpu.sh'
+            }
+            stage("Artifact")
+            {
+                archiveArtifacts artifacts: 'dist/release/**/*'
+                junit 'scripts/*.xml'
+            }
+        }
+    }
+    return retNode
+}
+
+def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-    tasks["Ubuntu"] = executeBuildUbuntu(projectBranch)
-//    tasks["Windows"] = executeBuildWin(projectBranch)
+    tasks["TestCpu"] = executeTestsCpu(projectBranch)
+    tasks["TestGpu"] = executeTestsGpu(projectBranch)
 
     parallel tasks
+/*
+    def tasks = [:]    
+    testPlatforms.split(';').each()
+    {
+        tasks["${it}"] = executeTestWindows("${it}", projectBranch)
+    }
+    node("gpu${asicName}")
+    {
+	
+    }
+*/    
 }
 
 def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;AMD_WX7100', Boolean enableNotifications = true) {
@@ -82,7 +119,8 @@ def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;
     try 
     {
         timestamps {
-            executeBuilds(projectBranch)
+            executeBuildUbuntu(projectBranch)
+            executeTests(projectBranch)
         }
     }
     finally 
