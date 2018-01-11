@@ -43,7 +43,8 @@ def executeBuildWindowsVS2015(String projectBranch)
 	        }
 	        stage("Test")
 	        {
-	        	sh 'ls ./dist/release/bin/x86_64/'
+	        	sh 'cd ./build/'
+	        	sh '../dist/release/bin/x86_64/UnitTest64 --gtest_list_tests'
 	        }
 	    }
     }
