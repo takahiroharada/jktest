@@ -30,12 +30,10 @@ def executeBuildWindowsVS2015(String projectBranch)
     	{
 	    	stage("Check")
 	        {
-	        	sh 'ls ./'
+	            checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
 	        }
 	        stage("Build") 
 	        {
-	            checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
-
 	            try 
 	            {
 	            	sh './scripts/build/macos/buildTahoeMin.sh'
