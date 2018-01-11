@@ -40,9 +40,6 @@ def executeBuildWin(String projectBranch)
 	            }
 	            finally {
 	            }
-	        }
-            stage("Stash")
-            {
                 stash includes: 'dist/**/*', name: 'binaries'
                 stash includes: 'Resources/**/*', name: 'resources'
                 stash includes: 'scripts/**/*', name: 'scripts'
@@ -78,14 +75,12 @@ def executeTestsWin(String projectBranch)
     def retNode = {
         node("windows")
         {
-            stage("UnStash")
+            stage("Test")
             {
                 unstash 'binaries'
                 unstash 'resources'
                 unstash 'scripts'
-            }
-            stage("Test")
-            {
+
                 bat '''
                 cd ./scripts/test/
                 runFuncTests.bat
@@ -106,7 +101,8 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-    tasks["Windows"] = executeTestsWin(projectBranch)
+    tasks["TestCpu"] = executeTestsWin(projectBranch)
+    tasks["TestGpu"] = executeTestsWin(projectBranch)
 
     parallel tasks
 /*
