@@ -47,18 +47,6 @@ def executeBuildWin(String projectBranch)
                 stash includes: 'Resources/**/*', name: 'resources'
                 stash includes: 'scripts/**/*', name: 'scripts'
             }
-	        stage("Test")
-	        {
-	        	bat '''
-                cd ./scripts/test/
-                runFuncTests.bat
-                '''
-	        }
-	        stage("Artifact")
-	        {
-	        	archiveArtifacts artifacts: 'dist/release/**/*'
-                junit 'scripts/*.xml'
-	        }
 	    }
     }
     return retNode
@@ -85,12 +73,62 @@ def executeBuilds(String projectBranch)
 */    
 }
 
+def executeTestsWin(String projectBranch)
+{
+    def retNode = {
+        node("windows")
+        {
+            stage("UnStash")
+            {
+                unstash 'binaries'
+                unstash 'resources'
+                unstash 'scripts'
+            }
+            stage("Test")
+            {
+                bat '''
+                cd ./scripts/test/
+                runFuncTests.bat
+                '''
+            }
+            stage("Artifact")
+            {
+                archiveArtifacts artifacts: 'dist/release/**/*'
+                junit 'scripts/*.xml'
+            }
+        }
+    }
+    return retNode
+}
+
+
+def executeTests(String projectBranch)
+{
+    def tasks = [:]
+
+    tasks["Windows"] = executeTestsWin(projectBranch)
+
+    parallel tasks
+/*
+    def tasks = [:]    
+    testPlatforms.split(';').each()
+    {
+        tasks["${it}"] = executeTestWindows("${it}", projectBranch)
+    }
+    node("gpu${asicName}")
+    {
+    
+    }
+*/    
+}
+
 def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;AMD_WX7100', Boolean enableNotifications = true) {
       
     try 
     {
         timestamps {
             executeBuilds(projectBranch)
+            executeTests(projectBranch)
         }
     }
     finally 
