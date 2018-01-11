@@ -13,9 +13,13 @@ def checkOutBranchOrScm(String branchName, String repoName) {
     else
     {
         echo 'checkout from scm options'
-        checkout scm
-    	sh 'git submodule init'
-    	sh 'git submodule update'
+	    checkout([
+	        $class: 'GitSCM',
+	        branches: scm.branches,
+	        doGenerateSubmoduleConfigurations: true,
+	        extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],
+	        userRemoteConfigs: scm.userRemoteConfigs
+	    ])
     }
 }
 
