@@ -44,6 +44,8 @@ def executeBuildWin(String projectBranch)
             stage("Stash")
             {
                 stash includes: 'dist/**/*', name: 'binaries'
+                stash includes: 'Resources/**/*', name: 'resources'
+                stash includes: 'scripts/**/*', name: 'scripts'
             }
 	        stage("Test")
 	        {
