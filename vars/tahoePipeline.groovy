@@ -47,7 +47,7 @@ def executeBuildWindowsVS2015(String projectBranch)
 	        }
 	        stage("Artifact")
 	        {
-	        	archiveArtifacts artifacts: './dist/release/**/*.*'
+	        	archiveArtifacts artifacts: 'dist/release/**/*.*'
 	        }
 	    }
     }
