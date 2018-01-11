@@ -25,38 +25,31 @@ def checkOutBranchOrScm(String branchName, String repoName) {
 
 def executeBuildWin(String projectBranch)
 {
-    def retNode = {
-    	node("windows")
-    	{
-	    	stage("Check")
-	        {
-	            checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
-	        }
-	        stage("Build") 
-	        {
-	            try 
-	            {
-	            	bat './scripts/build/win/buildTahoeMin.bat'
-	            }
-	            finally {
-	            }
-                stash includes: 'dist/**/*', name: 'binaries'
-                stash includes: 'Resources/**/*', name: 'resources'
-                stash includes: 'scripts/**/*', name: 'scripts'
+	node("windows")
+	{
+    	stage("Check")
+        {
+            checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
+        }
+        stage("Build") 
+        {
+            try 
+            {
+            	bat './scripts/build/win/buildTahoeMin.bat'
             }
-	    }
+            finally {
+            }
+            stash includes: 'dist/**/*', name: 'binaries'
+            stash includes: 'Resources/**/*', name: 'resources'
+            stash includes: 'scripts/**/*', name: 'scripts'
+        }
     }
-    return retNode
 }
 
 
 def executeBuilds(String projectBranch)
 {
-    def tasks = [:]
-
-    tasks["Windows"] = executeBuildWin(projectBranch)
-
-    parallel tasks
+    executeBuildWin(projectBranch)
 /*
     def tasks = [:]    
     testPlatforms.split(';').each()
