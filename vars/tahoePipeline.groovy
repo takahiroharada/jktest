@@ -17,9 +17,9 @@ def checkOutBranchOrScm(String branchName, String repoName) {
 	        $class: 'GitSCM',
 	        branches: scm.branches,
 	        doGenerateSubmoduleConfigurations: true,
-	        extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],            
+	        extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true],            
 	        [$class: 'CheckoutOption', timeout: 60],
-            [$class: 'CloneOption', timeout: 60, noTags: false],
+            [$class: 'CloneOption', timeout: 60, noTags: false]],
 	        userRemoteConfigs: scm.userRemoteConfigs
 	    ])
     }
