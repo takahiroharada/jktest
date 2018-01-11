@@ -37,6 +37,7 @@ def executeBuildWin(String projectBranch)
 	            try 
 	            {
 	            	bat './scripts/build/win/buildTahoeMin.bat'
+                    stash includes: './dist/**/*', './Resources/**/*', './scripts/**/*', name: 'appWindows'
 	            }
 	            finally {
 	            }
@@ -57,6 +58,7 @@ def executeBuildWin(String projectBranch)
     }
     return retNode
 }
+
 
 def executeBuilds(String projectBranch)
 {
