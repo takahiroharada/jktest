@@ -96,7 +96,7 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-    tasks["TestCpu"] = executeTestsCpu(projectBranch)
+//    tasks["TestCpu"] = executeTestsCpu(projectBranch)
     tasks["TestGpu"] = executeTestsGpu(projectBranch)
 
     parallel tasks
