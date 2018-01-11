@@ -37,22 +37,10 @@ def executeBuildWin(String projectBranch)
 	            try 
 	            {
 	            	bat './scripts/build/win/buildTahoeMin.bat'
-                    stash includes: './dist/**/*', './Resources/**/*', './scripts/**/*', name: 'appWindows'
+                    stash includes: 'dist/**/*', 'Resources/**/*', 'scripts/**/*', name: 'appWindows'
 	            }
 	            finally {
 	            }
-	        }
-	        stage("Test")
-	        {
-	        	bat '''
-                cd ./scripts/test/
-                runFuncTests.bat
-                '''
-	        }
-	        stage("Artifact")
-	        {
-	        	archiveArtifacts artifacts: 'dist/release/**/*'
-                junit 'scripts/*.xml'
 	        }
 	    }
     }
@@ -80,12 +68,58 @@ def executeBuilds(String projectBranch)
 */    
 }
 
+def executeTestWin(String projectBranch)
+{
+    def retNode = {
+        node("windows")
+        {
+            stage("Test")
+            {
+                unstash 'appWindows'
+                bat '''
+                cd ./scripts/test/
+                runFuncTests.bat
+                '''
+            }
+            stage("Artifact")
+            {
+                archiveArtifacts artifacts: 'dist/release/**/*'
+                junit 'scripts/*.xml'
+            }
+        }
+    }
+    return retNode
+}
+
+
+def executeTests(String projectBranch)
+{
+    def tasks = [:]
+
+    tasks["Windows"] = executeTestWin(projectBranch)
+
+    parallel tasks
+/*
+    def tasks = [:]    
+    testPlatforms.split(';').each()
+    {
+        tasks["${it}"] = executeTestWindows("${it}", projectBranch)
+    }
+    node("gpu${asicName}")
+    {
+    
+    }
+*/    
+}
+
 def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;AMD_WX7100', Boolean enableNotifications = true) {
       
     try 
     {
-        timestamps {
+        timestamps 
+        {
             executeBuilds(projectBranch)
+            executeTests(projectBranch)
         }
     }
     finally 
