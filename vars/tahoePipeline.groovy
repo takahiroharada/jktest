@@ -72,7 +72,7 @@ def executeBuilds(String projectBranch)
     def tasks = [:]
 
     tasks["Ubuntu"] = executeBuildUbuntu(projectBranch)
-    tasks["Windows"] = executeBuildWin(projectBranch)
+//    tasks["Windows"] = executeBuildWin(projectBranch)
 
     parallel tasks
 }
