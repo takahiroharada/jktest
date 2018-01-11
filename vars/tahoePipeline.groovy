@@ -14,6 +14,8 @@ def checkOutBranchOrScm(String branchName, String repoName) {
     {
         echo 'checkout from scm options'
         checkout scm
+    	sh 'git submodule init'
+    	sh 'git submodule update'
     }
 }
 
@@ -25,8 +27,6 @@ def executeBuildWindowsVS2015(String projectBranch)
 	    	stage("Check")
 	        {
 	        	sh 'ls ./'
-	        	sh 'git submodule init'
-	        	sh 'git submodule update'
 	        }
 	        stage("Build") 
 	        {
