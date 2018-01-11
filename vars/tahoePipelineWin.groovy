@@ -63,7 +63,7 @@ def executeBuilds(String projectBranch)
 */    
 }
 
-def executeTestsWin(String projectBranch)
+def executeTestsCpu(String projectBranch)
 {
     def retNode = {
         node("windows")
@@ -75,8 +75,7 @@ def executeTestsWin(String projectBranch)
                 unstash 'scripts'
 
                 bat '''
-                cd ./scripts/test/
-                runFuncTests.bat
+                ./scripts/test/win/tahoeTestsCpu.bat
                 '''
             }
             stage("Artifact")
@@ -89,13 +88,37 @@ def executeTestsWin(String projectBranch)
     return retNode
 }
 
+def executeTestsGpu(String projectBranch)
+{
+    def retNode = {
+        node("windows")
+        {
+            stage("Test")
+            {
+                unstash 'binaries'
+                unstash 'resources'
+                unstash 'scripts'
+
+                bat '''
+                ./scripts/test/win/tahoeTestsGpu.bat
+                '''
+            }
+            stage("Artifact")
+            {
+                archiveArtifacts artifacts: 'dist/release/**/*'
+                junit 'scripts/*.xml'
+            }
+        }
+    }
+    return retNode
+}
 
 def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-    tasks["TestCpu"] = executeTestsWin(projectBranch)
-    tasks["TestGpu"] = executeTestsWin(projectBranch)
+    tasks["TestCpu"] = executeTestsCpu(projectBranch)
+    tasks["TestGpu"] = executeTestsGpu(projectBranch)
 
     parallel tasks
 /*
