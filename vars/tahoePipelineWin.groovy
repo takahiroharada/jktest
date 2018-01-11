@@ -41,6 +41,10 @@ def executeBuildWin(String projectBranch)
 	            finally {
 	            }
 	        }
+            stage("Stash")
+            {
+                stash includes: 'dist/**/*', name: 'binaries'
+            }
 	        stage("Test")
 	        {
 	        	bat '''
