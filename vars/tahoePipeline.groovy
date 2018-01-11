@@ -23,10 +23,10 @@ def checkOutBranchOrScm(String branchName, String repoName) {
     }
 }
 
-def executeBuildWindowsVS2015(String projectBranch)
+def executeBuildUbuntu(String projectBranch)
 {
     def retNode = {
-    	node
+    	node("ubuntu")
     	{
 	    	stage("Check")
 	        {
@@ -54,11 +54,25 @@ def executeBuildWindowsVS2015(String projectBranch)
     return retNode
 }
 
+def executeBuildWin(String projectBranch)
+{
+    def retNode = {
+    	node("win10")
+    	{
+	    	stage("Check")
+	        {
+	        }
+	    }
+    }
+    return retNode
+}
+
 def executeBuilds(String projectBranch)
 {
     def tasks = [:]
 
-    tasks["Windows"] = executeBuildWindowsVS2015(projectBranch)
+    tasks["Ubuntu"] = executeBuildUbuntu(projectBranch)
+    tasks["Windows"] = executeBuildWin(projectBranch)
 
     parallel tasks
 }
