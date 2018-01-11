@@ -20,6 +20,10 @@ def checkOutBranchOrScm(String branchName, String repoName) {
 def executeBuildWindowsVS2015(String projectBranch)
 {
     def retNode = {
+    	stage("Check")
+        {
+        	sh 'ls ./'
+        }
         stage("Build") 
         {
             checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
