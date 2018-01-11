@@ -74,9 +74,7 @@ def executeTestsCpu(String projectBranch)
                 unstash 'resources'
                 unstash 'scripts'
 
-                bat '''
-                ./scripts/test/win/tahoeTestsCpu.bat
-                '''
+                bat './scripts/test/win/tahoeTestsCpu.bat'
             }
             stage("Artifact")
             {
@@ -99,9 +97,7 @@ def executeTestsGpu(String projectBranch)
                 unstash 'resources'
                 unstash 'scripts'
 
-                bat '''
-                ./scripts/test/win/tahoeTestsGpu.bat
-                '''
+                bat './scripts/test/win/tahoeTestsGpu.bat'
             }
             stage("Artifact")
             {
