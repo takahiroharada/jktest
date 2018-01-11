@@ -25,6 +25,8 @@ def executeBuildWindowsVS2015(String projectBranch)
 	    	stage("Check")
 	        {
 	        	sh 'ls ./'
+	        	sh 'git submodule init'
+	        	sh 'git submodule update'
 	        }
 	        stage("Build") 
 	        {
