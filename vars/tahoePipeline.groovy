@@ -44,7 +44,6 @@ def executeBuildUbuntu(String projectBranch)
             stash includes: 'scripts/**/*', name: 'scripts'
         }
     }
-    return retNode
 }
 
 def executeTestsGpu(String projectBranch)
