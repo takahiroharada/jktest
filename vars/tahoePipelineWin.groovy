@@ -43,7 +43,10 @@ def executeBuildWin(String projectBranch)
 	        }
 	        stage("Test")
 	        {
-	        	sh './dist/release/bin/x86_64/UnitTest64 --gtest_list_tests'
+	        	bat '''
+                cd ./scripts/test/
+                runFuncTests.bat
+                '''
 	        }
 	        stage("Artifact")
 	        {
