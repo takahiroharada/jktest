@@ -43,7 +43,7 @@ def executeBuildUbuntu(String projectBranch)
         {
             try 
             {
-            	sh './scripts/build/macos/buildTahoeMin.sh'
+            	sh './scripts/build/macos/buildTahoe.sh'
             }
             finally {
             }
@@ -104,7 +104,7 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-//    tasks["TestCpu"] = executeTestsCpu(projectBranch)
+    tasks["TestCpu"] = executeTestsCpu(projectBranch)
     tasks["TestGpu"] = executeTestsGpu(projectBranch)
 
     parallel tasks
