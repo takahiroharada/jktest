@@ -30,7 +30,8 @@ def executeBuildUbuntu(String projectBranch)
     	stage("Check")
         {
             checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
-            checkOutBranchOrScm('master', 'https://github.com/amdadvtech/firerenderdeps.git')
+//            checkOutBranchOrScm('master', 'https://github.com/amdadvtech/firerenderdeps.git')
+            git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url 'https://github.com/amdadvtech/firerenderdeps.git'
 			sh 'ls'
 			sh 'ls contrib/lib/osx64'
         }
