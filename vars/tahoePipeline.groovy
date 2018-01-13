@@ -35,7 +35,7 @@ def executeBuildUbuntu(String projectBranch)
 			{
             	git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
 			}
-			sh 'cp -r ./deps/ ./'
+			sh 'cp -r ./deps/contrib ./'
 			sh 'ls'
 			sh 'ls contrib/lib/osx64'
         }
