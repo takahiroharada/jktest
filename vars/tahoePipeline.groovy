@@ -8,7 +8,7 @@ def checkOutBranchOrScm(String branchName, String repoName) {
             [$class: 'CheckoutOption', timeout: 30],
             [$class: 'CloneOption', timeout: 30, noTags: false],
             [$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false, recursiveSubmodules: true, reference: '', trackingSubmodules: false]
-            ], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'takahiroharada', url: "${repoName}"]]])
+            ], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: "${repoName}"]]])
     }
     else
     {
