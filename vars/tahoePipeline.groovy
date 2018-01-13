@@ -36,7 +36,6 @@ def executeBuildUbuntu(String projectBranch)
             	git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
 			}
 			sh 'cp -r ./deps/contrib ./'
-			sh 'ls'
 			sh 'ls contrib/lib/osx64'
         }
         stage("Build") 
@@ -88,7 +87,11 @@ def executeTestsCpu(String projectBranch)
                 unstash 'resources'
                 unstash 'scripts'
 
-                sh './scripts/test/macos/tahoeTestsCpu.sh'
+//                sh './scripts/test/macos/tahoeTestsCpu.sh'
+				sh '''
+				cd scripts
+				../dist/release/bin/x86_64/UnitTest64 -cldevice cpu -referencePath ../tahoe/mstype1_GpuAmdCI+_WinLinux/ -unittestdatapath ../unittestdata/ --gtest_output=xml:resultTahoeCpu.xml --gtest_filter=*StageDemo*
+				'''
             }
             stage("Artifact")
             {
