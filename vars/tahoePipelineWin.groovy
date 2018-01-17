@@ -25,7 +25,7 @@ def checkOutBranchOrScm(String branchName, String repoName) {
 
 def executeBuildWin(String projectBranch)
 {
-	node("win10")
+	node("win10" && "git")
 	{
     	stage("Check")
         {
