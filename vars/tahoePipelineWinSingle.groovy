@@ -89,7 +89,7 @@ def executeTestsCpu(String projectBranch)
 def executeTestsGpu(String projectBranch)
 {
     def retNode = {
-        node("win10" && "fiji")
+        node("windows")
         {
             stage("Test")
             {
