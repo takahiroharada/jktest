@@ -86,10 +86,10 @@ def executeTestsCpu(String projectBranch)
     return retNode
 }
 
-def executeTestsGpu(String projectBranch)
+def executeTestsGpu(String projectBranch, String gpu)
 {
     def retNode = {
-        node("win10" && "fiji")
+        node("win10" && gpu)
         {
             stage("Test")
             {
@@ -114,7 +114,8 @@ def executeTests(String projectBranch)
     def tasks = [:]
 
     tasks["TestCpu"] = executeTestsCpu(projectBranch)
-    tasks["TestGpu"] = executeTestsGpu(projectBranch)
+    tasks["TestGpu"] = executeTestsGpu(projectBranch,"fiji")
+    tasks["TestGpu"] = executeTestsGpu(projectBranch,"quadrok5000")
 
     parallel tasks
 /*
