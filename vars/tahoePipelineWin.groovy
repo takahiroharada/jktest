@@ -116,6 +116,7 @@ def executeTests(String projectBranch)
     tasks["TestCpu"] = executeTestsCpu(projectBranch)
     tasks["Test fiji"] = executeTestsGpu(projectBranch,"fiji")
     tasks["Test quadrok5000"] = executeTestsGpu(projectBranch,"quadrok5000")
+    tasks["Test geforce1080"] = executeTestsGpu(projectBranch,"geforce1080")
 
     parallel tasks
 /*
