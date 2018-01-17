@@ -66,7 +66,7 @@ def executeBuilds(String projectBranch)
 def executeTestsCpu(String projectBranch)
 {
     def retNode = {
-        node("windows")
+        node("win10")
         {
             stage("Test")
             {
