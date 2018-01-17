@@ -8,7 +8,7 @@ def checkOutBranchOrScm(String branchName, String repoName) {
             [$class: 'CheckoutOption', timeout: 30],
             [$class: 'CloneOption', timeout: 30, noTags: false],
             [$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false, recursiveSubmodules: true, reference: '', trackingSubmodules: false]
-            ], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'radeonprorender', url: "${repoName}"]]])
+            ], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: "${repoName}"]]])
     }
     else
     {
@@ -30,12 +30,19 @@ def executeBuildUbuntu(String projectBranch)
     	stage("Check")
         {
             checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
+//            checkOutBranchOrScm('master', 'https://github.com/amdadvtech/firerenderdeps.git')
+			dir('deps')
+			{
+            	git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
+			}
+			sh 'cp -r ./deps/contrib ./'
+			sh 'ls contrib/lib/osx64'
         }
         stage("Build") 
         {
             try 
             {
-            	sh './scripts/build/macos/buildTahoeMin.sh'
+            	sh './scripts/build/macos/buildTahoe.sh'
             }
             finally {
             }
@@ -80,7 +87,11 @@ def executeTestsCpu(String projectBranch)
                 unstash 'resources'
                 unstash 'scripts'
 
-                sh './scripts/test/macos/tahoeTestsCpu.sh'
+//                sh './scripts/test/macos/tahoeTestsCpu.sh'
+				sh '''
+				cd scripts
+				../dist/release/bin/x86_64/UnitTest64 -cldevice cpu -referencePath ../tahoe/mstype1_GpuAmdCI+_WinLinux/ -unittestdatapath ../unittestdata/ --gtest_output=xml:resultTahoeCpu.xml --gtest_filter=*StageDemo*
+				'''
             }
             stage("Artifact")
             {
@@ -96,7 +107,7 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-//    tasks["TestCpu"] = executeTestsCpu(projectBranch)
+    tasks["TestCpu"] = executeTestsCpu(projectBranch)
     tasks["TestGpu"] = executeTestsGpu(projectBranch)
 
     parallel tasks
