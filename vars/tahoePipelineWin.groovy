@@ -35,7 +35,7 @@ def executeBuildWin(String projectBranch)
         {
             try 
             {
-            	bat './scripts/build/win/buildTahoeMin.bat'
+            	bat './scripts/build/win/buildTahoe.bat'
             }
             finally {
             }
