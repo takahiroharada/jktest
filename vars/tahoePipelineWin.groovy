@@ -68,7 +68,7 @@ def executeTestsImpl(String os, String gpu,
                 else
                 {
                     if( isUnix() )
-                        bat testCommandLinuxGpu
+                        sh testCommandLinuxGpu
                     else
                         bat testCommandGpu
                 }
@@ -98,20 +98,15 @@ def executeTests()
     def tasks = [:]
 
 	String gpus1 = 'cpu,vega,fiji,quadrok5000,geforce1080'
-    String gpus = "cpu,vega,fiji"
+    String gpus = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji"
     gpus.split(',').each()
     {
-        gpu = "${it}"
-        tasks["win10-"+gpu] = executeTestsImpl( "win10", gpu, 
+        def (os, gpu) = it.tokenize(':')
+        tasks[os+"-"+gpu] = executeTestsImpl( os, gpu, 
             './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
             './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
             'dist/release/**/*' )        
     }
-
-    tasks["ubuntu-fiji"] = executeTestsImpl( "ubuntu", "fiji", 
-        "./scripts/test/win/tahoeTestsCpu.bat", "./scripts/test/win/tahoeTestsGpu.bat",
-        "./scripts/test/macos/tahoeTestsCpu.sh", "./scripts/test/macos/tahoeTestsGpu.sh",
-        "dist/release/**/*" ) 
 
     parallel tasks
 }
