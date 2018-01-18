@@ -99,7 +99,11 @@ def executeTests()
 
 //	String gpus = "cpu,vega,fiji,quadrok5000,geforce1080"
     String gpus = "cpu,vega,fiji"
-
+    gpus.split(',').each()
+    {
+        gpu = "${it}"
+        println gpu
+    }
 	gpus.split(',').each()
 	{
 		gpu = "${it}"
