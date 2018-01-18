@@ -91,7 +91,7 @@ def executeTestsGpu(String projectBranch, String gpu)
     def retNode = {
         node("win10" && gpu)
         {
-            stage("Test")
+            stage("Test" + gpu)
             {
                 unstash 'binaries'
                 unstash 'resources'
