@@ -9,8 +9,11 @@ def executeBuilds(String projectBranch)
             {
                 git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
             }
-            bat 'dir .'
-            bat 'dir deps'
+
+            if( isUnix() )
+                println "linux"
+            else
+                println "windows"
             bat 'xcopy /E/Y deps\\contrib contrib'
             bat 'dir contrib\\lib\\osx64'
         }
@@ -58,8 +61,8 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-	String gpus = "cpu,vega,fiji,quadrok5000,geforce1080"
-//  String gpus = "cpu,vega,fiji"
+//	String gpus = "cpu,vega,fiji,quadrok5000,geforce1080"
+  String gpus = "cpu,vega,fiji"
 
 	gpus.split(',').each()
 	{
