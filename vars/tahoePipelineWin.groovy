@@ -98,16 +98,16 @@ def executeTests()
     def tasks = [:]
 
 //	String gpus = 'cpu,vega,fiji,quadrok5000,geforce1080'
-    String gpus = 'cpu,vega,fiji'
+    String gpus = "cpu,vega,fiji"
     gpus.split(',').each()
     {
         gpu = "${it}"
-        println gpu
+        println gpu        
         tasks[gpu] = executeTestsImpl( "win10", gpu, 
             './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
             './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
             'dist/release/**/*' )        
-	}
+    }
 
     {
 //        tasks["ubuntu-fiji"] = executeTests( "ubuntu", "fiji", 
