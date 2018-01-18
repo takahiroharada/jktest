@@ -78,7 +78,7 @@ def executeBuilds(String projectBranch)
 {
     def tasks = [:]
 
-    tasks["winBuild"] = executeBuilds(projectBranch, "win10", './scripts/build/macos/buildTahoe.sh', './scripts/build/win/buildTahoe.bat' )
+//    tasks["winBuild"] = executeBuilds(projectBranch, "win10", './scripts/build/macos/buildTahoe.sh', './scripts/build/win/buildTahoe.bat' )
     tasks["ubuntuBuild"] = executeBuilds(projectBranch, "ubuntu", './scripts/build/macos/buildTahoe.sh', './scripts/build/win/buildTahoe.bat' )
 
     parallel tasks
