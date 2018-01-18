@@ -1,5 +1,6 @@
 def executeBuilds(String projectBranch, String os, String commandLinux, String commandWin)
 {
+    def retNode = {
 	node(os && "git")
 	{
     	stage("Check")
@@ -31,6 +32,7 @@ def executeBuilds(String projectBranch, String os, String commandLinux, String c
             stash includes: 'scripts/**/*', name: 'scripts'+os
         }
     }
+    return retNode
 }
 
 def executeTests(String os, String gpu, 
