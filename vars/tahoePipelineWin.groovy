@@ -27,53 +27,7 @@ def executeBuilds(String projectBranch)
     executeBuildWin(projectBranch)
 }
 
-def executeTestsCpu(String projectBranch)
-{
-    def retNode = {
-        node("win10")
-        {
-            stage("Test")
-            {
-                unstash 'binaries'
-                unstash 'resources'
-                unstash 'scripts'
-
-                bat './scripts/test/win/tahoeTestsCpu.bat'
-            }
-            stage("Artifact")
-            {
-                archiveArtifacts artifacts: 'dist/release/**/*'
-                junit 'scripts/*.xml'
-            }
-        }
-    }
-    return retNode
-}
-
-def executeTestsGpu(String projectBranch, String gpu)
-{
-    def retNode = {
-        node("win10" && gpu)
-        {
-            stage("Test-" + gpu)
-            {
-                unstash 'binaries'
-                unstash 'resources'
-                unstash 'scripts'
-
-                bat './scripts/test/win/tahoeTestsGpu.bat'
-            }
-            stage("Artifact")
-            {
-                archiveArtifacts artifacts: 'dist/release/**/*'
-                junit 'scripts/*.xml'
-            }
-        }
-    }
-    return retNode
-}
-
-def executeTests(String projectBranch, String gpu)
+def executeTests(String projectBranch, String gpu, String testCommandCpu, String testCommandGpu, String artifactPath)
 {
     def retNode = {
         node("win10" && gpu)
@@ -84,13 +38,13 @@ def executeTests(String projectBranch, String gpu)
                 unstash 'resources'
                 unstash 'scripts'
                 if( gpu == "cpu" )
-                    bat './scripts/test/win/tahoeTestsCpu.bat'
+                    bat testCommandCpu
                 else
-                    bat './scripts/test/win/tahoeTestsGpu.bat'
+                    bat testCommandGpu
             }
             stage("Artifact")
             {
-                archiveArtifacts artifacts: 'dist/release/**/*'
+                archiveArtifacts artifacts: artifactPath
                 junit 'scripts/*.xml'
             }
         }
@@ -102,18 +56,16 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-//	String gpus = "vega,fiji,quadrok5000,geforce1080"
+//	String gpus = "cpu,vega,fiji,quadrok5000,geforce1080"
     String gpus = "cpu,vega,fiji"
 
 	gpus.split(',').each()
 	{
 		gpu = "${it}"
-		tasks[gpu] = executeTests(projectBranch,gpu)
+		tasks[gpu] = executeTests(projectBranch,gpu, 
+            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
+            'dist/release/**/*')
 	}
-//	tasks["Test fiji"] = executeTestsGpu(projectBranch,"fiji")
-//    tasks["Test quadrok5000"] = executeTestsGpu(projectBranch,"quadrok5000")
-//    tasks["Test geforce1080"] = executeTestsGpu(projectBranch,"geforce1080")
-
     parallel tasks
 /*
     def tasks = [:]    
