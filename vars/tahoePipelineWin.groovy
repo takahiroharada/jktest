@@ -1,4 +1,4 @@
-def executeBuilds(String projectBranch)
+def executeBuilds(String projectBranch, String commandLinux, String commandWin)
 {
 	node("win10" && "git")
 	{
@@ -11,17 +11,18 @@ def executeBuilds(String projectBranch)
             }
 
             if( isUnix() )
-                println "linux"
+                sh 'cp -r ./deps/contrib ./'
             else
-                println "windows"
-            bat 'xcopy /E/Y deps\\contrib contrib'
-            bat 'dir contrib\\lib\\osx64'
+                bat 'xcopy /E/Y deps\\contrib contrib'
         }
         stage("Build") 
         {
             try 
             {
-            	bat './scripts/build/win/buildTahoe.bat'
+                if( isUnix() )
+                    sh commandLinux
+                else
+                	bat commandWin
             }
             finally {
             }
@@ -67,22 +68,16 @@ def executeTests(String projectBranch)
 	gpus.split(',').each()
 	{
 		gpu = "${it}"
-		tasks[gpu] = executeTests(projectBranch,gpu, 
-            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
-            'dist/release/**/*')
+        if( isUnix() )
+    		tasks[gpu] = executeTests(projectBranch,gpu, 
+                './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
+                'dist/release/**/*')
+        else
+            tasks[gpu] = executeTests(projectBranch,gpu, 
+                './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
+                'dist/release/**/*')        
 	}
     parallel tasks
-/*
-    def tasks = [:]    
-    testPlatforms.split(';').each()
-    {
-        tasks["${it}"] = executeTestWindows("${it}", projectBranch)
-    }
-    node("gpu${asicName}")
-    {
-    
-    }
-*/    
 }
 
 def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;AMD_WX7100', Boolean enableNotifications = true) {
@@ -90,7 +85,7 @@ def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;
     try 
     {
         timestamps {
-            executeBuilds(projectBranch)
+            executeBuilds(projectBranch, './scripts/build/macos/buildTahoe.sh', './scripts/build/win/buildTahoe.bat' )
             executeTests(projectBranch)
         }
     }
