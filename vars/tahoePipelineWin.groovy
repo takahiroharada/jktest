@@ -12,18 +12,27 @@ def executeBuilds(String projectBranch, String os, String commandLinux, String c
             }
 
             if( isUnix() )
+            {
                 sh 'cp -r ./deps/contrib ./'
+                sh 'ls contrib/lib/linux64'
+            }
             else
+            {
                 bat 'xcopy /E/Y deps\\contrib contrib'
+            }
         }
         stage("Build-"+os) 
         {
             try 
             {
                 if( isUnix() )
+                {
                     sh commandLinux
+                }
                 else
+                {
                 	bat commandWin
+                }
             }
             finally {
             }
