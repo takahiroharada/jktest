@@ -83,12 +83,12 @@ def executeTests(String os, String gpu,
     return retNode
 }
 
-def executeBuilds(String projectBranch)
+def executeBuilds(String projectBranch, String commandLinux, String commandWin)
 {
     def tasks = [:]
 
-    tasks["winBuild"] = executeBuilds(projectBranch, "win10", './scripts/build/macos/buildTahoe.sh', './scripts/build/win/buildTahoe.bat' )
-    tasks["ubuntuBuild"] = executeBuilds(projectBranch, "ubuntu", './scripts/build/macos/buildTahoe.sh', './scripts/build/win/buildTahoe.bat' )
+    tasks["winBuild"] = executeBuilds(projectBranch, "win10", commandLinux, commandWin )
+    tasks["ubuntuBuild"] = executeBuilds(projectBranch, "ubuntu", commandLinux, commandWin )
 
     parallel tasks
 }
@@ -121,11 +121,12 @@ def executeTests()
 
 def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;AMD_WX7100', Boolean enableNotifications = true) 
 {
-      
+    String buildCommandLinux = './scripts/build/macos/buildTahoe.sh'
+    String buildCommandWin = './scripts/build/win/buildTahoe.bat'
     try 
     {
         timestamps {
-            executeBuilds(projectBranch)
+            executeBuilds( projectBranch, buildCommandLinux, buildCommandWin )
             executeTests()
         }
     }
