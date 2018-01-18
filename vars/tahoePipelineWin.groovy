@@ -115,12 +115,13 @@ def executeTests(String projectBranch)
 
 	String gpus = "fiji,quadrok5000,geforce1080"
 
+	def tasks = [:]
     tasks["TestCpu"] = executeTestsCpu(projectBranch)
 	platforms.split(',').each()
 	{
 		gpu = "${it}"
 //		tasks[it] = executeTestsGpu(projectBranch,it)
-		println it
+		println gpu 
 	}
 	tasks["Test fiji"] = executeTestsGpu(projectBranch,"fiji")
 //    tasks["Test quadrok5000"] = executeTestsGpu(projectBranch,"quadrok5000")
