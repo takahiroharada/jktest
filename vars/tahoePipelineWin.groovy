@@ -74,7 +74,7 @@ def executeTests(String os, String gpu,
     return retNode
 }
 
-def executeBuilds()
+def executeBuilds(String projectBranch)
 {
     def tasks = [:]
 
@@ -107,7 +107,7 @@ def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;
     try 
     {
         timestamps {
-            executeBuilds()
+            executeBuilds(projectBranch)
             executeTests()
         }
     }
