@@ -102,11 +102,11 @@ def executeTests()
     gpus.split(',').each()
     {
         gpu = "${it}"
-        println gpu        
-        tasks[gpu] = executeTestsImpl( "win10", gpu, 
-            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
-            './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
-            'dist/release/**/*' )        
+        println gpu
+//        tasks[gpu] = executeTestsImpl( "win10", gpu, 
+//            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
+//            './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
+//            'dist/release/**/*' )        
     }
 
     {
