@@ -102,19 +102,11 @@ def executeTests()
     gpus.split(',').each()
     {
         gpu = "${it}"
-        println gpu
-//        tasks[gpu] = executeTestsImpl( "win10", gpu, 
-//            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
-//            './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
-//            'dist/release/**/*' )        
+        tasks[gpu] = executeTestsImpl( "win10", gpu, 
+            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
+            './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
+            'dist/release/**/*' )        
     }
-
-    {
-//        tasks["ubuntu-fiji"] = executeTests( "ubuntu", "fiji", 
-//            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
-//            './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
-//            'dist/release/**/*' ) 
-    }     
 
     parallel tasks
 }
@@ -127,7 +119,7 @@ def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;
     try 
     {
         timestamps {
-//            executeBuilds( projectBranch, buildCommandLinux, buildCommandWin )
+            executeBuilds( projectBranch, buildCommandLinux, buildCommandWin )
             executeTests()
         }
     }
