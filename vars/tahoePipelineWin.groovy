@@ -97,7 +97,7 @@ def executeTests()
 {
     def tasks = [:]
 
-//	String gpus = 'cpu,vega,fiji,quadrok5000,geforce1080'
+	String gpus1 = 'cpu,vega,fiji,quadrok5000,geforce1080'
     String gpus = "cpu,vega,fiji"
     gpus.split(',').each()
     {
@@ -124,12 +124,6 @@ def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;
     String buildCommandLinux = './scripts/build/macos/buildTahoe.sh'
     String buildCommandWin = './scripts/build/win/buildTahoe.bat'
 
-    String gpus = "cpu,vega,fiji"
-    gpus.split(',').each()
-    {
-        gpu = "${it}"
-        println gpu
-    }
     try 
     {
         timestamps {
