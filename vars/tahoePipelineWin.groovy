@@ -126,7 +126,7 @@ def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;
     try 
     {
         timestamps {
-            executeBuilds( projectBranch, buildCommandLinux, buildCommandWin )
+//            executeBuilds( projectBranch, buildCommandLinux, buildCommandWin )
             executeTests()
         }
     }
