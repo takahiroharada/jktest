@@ -1,7 +1,7 @@
 def executeBuilds(String projectBranch, String os, String commandLinux, String commandWin)
 {
     def retNode = {
-	node(os && "git")
+	node("${os} && git")
 	{
     	stage("Check-"+os)
         {
@@ -42,7 +42,7 @@ def executeTests(String os, String gpu,
     String artifactPath)
 {
     def retNode = {
-        node(os && gpu)
+        node("${os} && ${gpu}")
         {
             stage("Test-" + gpu)
             {
