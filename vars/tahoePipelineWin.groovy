@@ -119,10 +119,9 @@ def executeTests(String projectBranch)
 	gpus.split(',').each()
 	{
 		gpu = "${it}"
-//		tasks[it] = executeTestsGpu(projectBranch,it)
-		println gpu 
+		tasks[gpu] = executeTestsGpu(projectBranch,gpu)
 	}
-	tasks["Test fiji"] = executeTestsGpu(projectBranch,"fiji")
+//	tasks["Test fiji"] = executeTestsGpu(projectBranch,"fiji")
 //    tasks["Test quadrok5000"] = executeTestsGpu(projectBranch,"quadrok5000")
 //    tasks["Test geforce1080"] = executeTestsGpu(projectBranch,"geforce1080")
 
