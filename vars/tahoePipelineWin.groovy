@@ -33,10 +33,13 @@ def executeBuilds(String projectBranch, String commandLinux, String commandWin)
     }
 }
 
-def executeTests(String projectBranch, String gpu, String testCommandCpu, String testCommandGpu, String artifactPath)
+def executeTests(String os, String gpu, 
+    String testCommandCpu, String testCommandGpu, 
+    String testCommandLinuxCpu, String testCommandLinuxGpu, 
+    String artifactPath)
 {
     def retNode = {
-        node("win10" && gpu)
+        node(os && gpu)
         {
             stage("Test-" + gpu)
             {
@@ -44,9 +47,19 @@ def executeTests(String projectBranch, String gpu, String testCommandCpu, String
                 unstash 'resources'
                 unstash 'scripts'
                 if( gpu == "cpu" )
-                    bat testCommandCpu
+                {
+                    if( isUnix() )
+                        sh testCommandLinuxCpu
+                    else
+                        bat testCommandCpu
+                }
                 else
-                    bat testCommandGpu
+                {
+                    if( isUnix() )
+                        bat testCommandLinuxGpu
+                    else
+                        bat testCommandGpu
+                }
             }
             stage("Artifact")
             {
@@ -63,19 +76,15 @@ def executeTests(String projectBranch)
     def tasks = [:]
 
 //	String gpus = "cpu,vega,fiji,quadrok5000,geforce1080"
-  String gpus = "cpu,vega,fiji"
+    String gpus = "cpu,vega,fiji"
 
 	gpus.split(',').each()
 	{
 		gpu = "${it}"
-        if( isUnix() )
-    		tasks[gpu] = executeTests(projectBranch,gpu, 
-                './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
-                'dist/release/**/*')
-        else
-            tasks[gpu] = executeTests(projectBranch,gpu, 
-                './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
-                'dist/release/**/*')        
+        tasks[gpu] = executeTests( "win10", gpu, 
+            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
+            './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
+            'dist/release/**/*' )        
 	}
     parallel tasks
 }
