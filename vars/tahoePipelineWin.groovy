@@ -11,7 +11,7 @@ def executeBuildWin(String projectBranch)
             }
             bat 'dir .'
             bat 'dir deps'
-            bat 'xcopy /E deps\\contrib contrib'
+            bat 'xcopy /E/Y deps\\contrib contrib'
             bat 'dir contrib\\lib\\osx64'
         }
         stage("Build") 
