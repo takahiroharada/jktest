@@ -32,6 +32,7 @@ def executeBuilds(String projectBranch, String os, String commandLinux, String c
             stash includes: 'scripts/**/*', name: 'scripts'+os
         }
     }
+    }
     return retNode
 }
 
