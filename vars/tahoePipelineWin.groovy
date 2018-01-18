@@ -113,10 +113,16 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
+	String gpus = "fiji,quadrok5000,geforce1080"
+
     tasks["TestCpu"] = executeTestsCpu(projectBranch)
-    tasks["Test fiji"] = executeTestsGpu(projectBranch,"fiji")
-    tasks["Test quadrok5000"] = executeTestsGpu(projectBranch,"quadrok5000")
-    tasks["Test geforce1080"] = executeTestsGpu(projectBranch,"geforce1080")
+	platforms.split(',').each()
+	{
+		tasks[it] = executeTestsGpu(projectBranch,it)
+	}
+//	tasks["Test fiji"] = executeTestsGpu(projectBranch,"fiji")
+//    tasks["Test quadrok5000"] = executeTestsGpu(projectBranch,"quadrok5000")
+//    tasks["Test geforce1080"] = executeTestsGpu(projectBranch,"geforce1080")
 
     parallel tasks
 /*
