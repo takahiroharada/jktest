@@ -5,6 +5,12 @@ def executeBuildWin(String projectBranch)
     	stage("Check")
         {
             checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
+            dir('deps')
+            {
+                git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
+            }
+            bat 'xcopy /E deps\\contrib\\ contrib\\'
+            bat 'dir contrib\\lib\\osx64'
         }
         stage("Build") 
         {
