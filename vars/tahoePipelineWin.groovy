@@ -1,4 +1,4 @@
-def executeBuildWin(String projectBranch)
+def executeBuilds(String projectBranch)
 {
 	node("win10" && "git")
 	{
@@ -27,12 +27,6 @@ def executeBuildWin(String projectBranch)
             stash includes: 'scripts/**/*', name: 'scripts'
         }
     }
-}
-
-
-def executeBuilds(String projectBranch)
-{
-    executeBuildWin(projectBranch)
 }
 
 def executeTests(String projectBranch, String gpu, String testCommandCpu, String testCommandGpu, String artifactPath)
@@ -64,8 +58,8 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-//	String gpus = "cpu,vega,fiji,quadrok5000,geforce1080"
-    String gpus = "cpu,vega,fiji"
+	String gpus = "cpu,vega,fiji,quadrok5000,geforce1080"
+//  String gpus = "cpu,vega,fiji"
 
 	gpus.split(',').each()
 	{
