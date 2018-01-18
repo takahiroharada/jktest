@@ -1,6 +1,6 @@
-def executeBuilds(String projectBranch, String commandLinux, String commandWin)
+def executeBuilds(String projectBranch, String os, String commandLinux, String commandWin)
 {
-	node("win10" && "git")
+	node(os && "git")
 	{
     	stage("Check")
         {
@@ -26,9 +26,9 @@ def executeBuilds(String projectBranch, String commandLinux, String commandWin)
             }
             finally {
             }
-            stash includes: 'dist/**/*', name: 'binaries'
-            stash includes: 'Resources/**/*', name: 'resources'
-            stash includes: 'scripts/**/*', name: 'scripts'
+            stash includes: 'dist/**/*', name: 'binaries'+os
+            stash includes: 'Resources/**/*', name: 'resources'+os
+            stash includes: 'scripts/**/*', name: 'scripts'+os
         }
     }
 }
@@ -43,9 +43,9 @@ def executeTests(String os, String gpu,
         {
             stage("Test-" + gpu)
             {
-                unstash 'binaries'
-                unstash 'resources'
-                unstash 'scripts'
+                unstash 'binaries'+os
+                unstash 'resources'+os
+                unstash 'scripts'+os
                 if( gpu == "cpu" )
                 {
                     if( isUnix() )
@@ -71,7 +71,16 @@ def executeTests(String os, String gpu,
     return retNode
 }
 
-def executeTests(String projectBranch)
+def executeBuilds()
+{
+    def tasks = [:]
+
+    tasks["winBuild"] = executeBuilds(projectBranch, "win10", './scripts/build/macos/buildTahoe.sh', './scripts/build/win/buildTahoe.bat' )
+
+    parallel tasks
+}
+
+def executeTests()
 {
     def tasks = [:]
 
@@ -89,13 +98,14 @@ def executeTests(String projectBranch)
     parallel tasks
 }
 
-def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;AMD_WX7100', Boolean enableNotifications = true) {
+def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;AMD_WX7100', Boolean enableNotifications = true) 
+{
       
     try 
     {
         timestamps {
-            executeBuilds(projectBranch, './scripts/build/macos/buildTahoe.sh', './scripts/build/win/buildTahoe.bat' )
-            executeTests(projectBranch)
+            executeBuilds()
+            executeTests()
         }
     }
     finally 
