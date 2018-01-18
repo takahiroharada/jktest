@@ -93,34 +93,39 @@ def executeBuilds(String projectBranch, String commandLinux, String commandWin)
     parallel tasks
 }
 
-def executeTests()
+def executeTests(String testPlatforms, 
+    String testCmdWinCpu, String testCmdWinGpu, 
+    String testCmdLinuxCpu, String testCmdLinuxGpu)
 {
     def tasks = [:]
 
-	String gpus1 = 'cpu,vega,fiji,quadrok5000,geforce1080'
-    String gpus = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji"
-    gpus.split(',').each()
+//	String gpus1 = 'cpu,vega,fiji,quadrok5000,geforce1080'
+//    String gpus = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji"
+    testPlatforms.split(',').each()
     {
         def (os, gpu) = it.tokenize(':')
         tasks[os+"-"+gpu] = executeTestsImpl( os, gpu, 
-            './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
-            './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
+            testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu, 
             'dist/release/**/*' )        
     }
 
     parallel tasks
 }
 
-def call(String projectBranch='', String testPlatforms = 'AMD_RXVEGA;AMD_WX9100;AMD_WX7100', Boolean enableNotifications = true) 
+def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji", Boolean enableNotifications = true) 
 {
-    String buildCommandLinux = './scripts/build/macos/buildTahoe.sh'
-    String buildCommandWin = './scripts/build/win/buildTahoe.bat'
-
+    String buildCmdLinux = './scripts/build/macos/buildTahoe.sh'
+    String buildCmdWin = './scripts/build/win/buildTahoe.bat'
+    
+    String testCmdWinCpu = './scripts/test/win/tahoeTestsCpu.bat'
+    String testCmdWinGpu = './scripts/test/win/tahoeTestsGpu.bat'
+    String testCmdLinuxCpu = './scripts/test/macos/tahoeTestsCpu.sh'
+    String testCmdLinuxGpu = './scripts/test/macos/tahoeTestsGpu.sh'
     try 
     {
         timestamps {
-            executeBuilds( projectBranch, buildCommandLinux, buildCommandWin )
-            executeTests()
+            executeBuilds( projectBranch, buildCmdLinux, buildCmdWin )
+            executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu )
         }
     }
     finally 
