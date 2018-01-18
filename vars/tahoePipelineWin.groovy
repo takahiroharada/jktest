@@ -113,7 +113,7 @@ def executeTests(String projectBranch)
 {
     def tasks = [:]
 
-	String gpus = "fiji,quadrok5000,geforce1080"
+	String gpus = "vega,fiji,quadrok5000,geforce1080"
 
     tasks["TestCpu"] = executeTestsCpu(projectBranch)
 	gpus.split(',').each()
