@@ -3,7 +3,7 @@ def executeBuilds(String projectBranch, String os, String commandLinux, String c
     def retNode = {
 	node(os && "git")
 	{
-    	stage("Check")
+    	stage("Check-"+os)
         {
             checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
             dir('deps')
@@ -16,7 +16,7 @@ def executeBuilds(String projectBranch, String os, String commandLinux, String c
             else
                 bat 'xcopy /E/Y deps\\contrib contrib'
         }
-        stage("Build") 
+        stage("Build-"+os) 
         {
             try 
             {
@@ -64,7 +64,7 @@ def executeTests(String os, String gpu,
                         bat testCommandGpu
                 }
             }
-            stage("Artifact")
+            stage("Artifact-"+gpu)
             {
                 archiveArtifacts artifacts: artifactPath
                 junit 'scripts/*.xml'
