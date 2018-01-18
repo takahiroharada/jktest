@@ -25,17 +25,6 @@ def executeBuildWin(String projectBranch)
 def executeBuilds(String projectBranch)
 {
     executeBuildWin(projectBranch)
-/*
-    def tasks = [:]    
-    testPlatforms.split(';').each()
-    {
-        tasks["${it}"] = executeTestWindows("${it}", projectBranch)
-    }
-    node("gpu${asicName}")
-    {
-	
-    }
-*/    
 }
 
 def executeTestsCpu(String projectBranch)
@@ -84,18 +73,42 @@ def executeTestsGpu(String projectBranch, String gpu)
     return retNode
 }
 
+def executeTests(String projectBranch, String gpu)
+{
+    def retNode = {
+        node("win10" && gpu)
+        {
+            stage("Test-" + gpu)
+            {
+                unstash 'binaries'
+                unstash 'resources'
+                unstash 'scripts'
+                if( gpu == "cpu" )
+                    bat './scripts/test/win/tahoeTestsCpu.bat'
+                else
+                    bat './scripts/test/win/tahoeTestsGpu.bat'
+            }
+            stage("Artifact")
+            {
+                archiveArtifacts artifacts: 'dist/release/**/*'
+                junit 'scripts/*.xml'
+            }
+        }
+    }
+    return retNode
+}
+
 def executeTests(String projectBranch)
 {
     def tasks = [:]
 
 //	String gpus = "vega,fiji,quadrok5000,geforce1080"
-    String gpus = "vega,fiji"
+    String gpus = "cpu,vega,fiji"
 
-    tasks["TestCpu"] = executeTestsCpu(projectBranch)
 	gpus.split(',').each()
 	{
 		gpu = "${it}"
-		tasks[gpu] = executeTestsGpu(projectBranch,gpu)
+		tasks[gpu] = executeTests(projectBranch,gpu)
 	}
 //	tasks["Test fiji"] = executeTestsGpu(projectBranch,"fiji")
 //    tasks["Test quadrok5000"] = executeTestsGpu(projectBranch,"quadrok5000")
