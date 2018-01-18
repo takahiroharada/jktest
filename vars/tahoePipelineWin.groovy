@@ -103,7 +103,7 @@ def executeTests()
 	gpus.split(',').each()
 	{
 		gpu = "${it}"
-        tasks["win10-"+gpu] = executeTests( "win10", gpu, 
+        tasks[gpu] = executeTests( "win10", gpu, 
             './scripts/test/win/tahoeTestsCpu.bat', './scripts/test/win/tahoeTestsGpu.bat',
             './scripts/test/macos/tahoeTestsCpu.sh', './scripts/test/macos/tahoeTestsGpu.sh',
             'dist/release/**/*' )        
