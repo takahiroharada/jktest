@@ -9,6 +9,8 @@ def executeBuildWin(String projectBranch)
             {
                 git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
             }
+            bat 'dir .'
+            bat 'dir deps'
             bat 'xcopy /E deps\\contrib\\ contrib\\'
             bat 'dir contrib\\lib\\osx64'
         }
