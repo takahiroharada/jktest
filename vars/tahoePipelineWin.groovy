@@ -48,7 +48,7 @@ def executeBuilds(String projectBranch, String os, String commandLinux, String c
 def executeTestsImpl(String os, String gpu, 
     String testCommandCpu, String testCommandGpu, 
     String testCommandLinuxCpu, String testCommandLinuxGpu, 
-    String artifactPath)
+    def deployFunc )
 {
     def retNode = {
         node("${os} && ${gpu}")
@@ -75,15 +75,14 @@ def executeTestsImpl(String os, String gpu,
             }
             stage("Artifact-"+gpu)
             {
-                archiveArtifacts artifacts: artifactPath
-                junit 'scripts/*.xml'
+                deployFunc();
             }
         }
     }
     return retNode
 }
 
-def executeBuilds(String projectBranch, String commandLinux, String commandWin)
+def executeBuilds(String projectBranch, String commandLinux, String commandWin, )
 {
     def tasks = [:]
 
@@ -95,21 +94,26 @@ def executeBuilds(String projectBranch, String commandLinux, String commandWin)
 
 def executeTests(String testPlatforms, 
     String testCmdWinCpu, String testCmdWinGpu, 
-    String testCmdLinuxCpu, String testCmdLinuxGpu)
+    String testCmdLinuxCpu, String testCmdLinuxGpu,
+    def deployFunc )
 {
     def tasks = [:]
 
-//	String gpus1 = 'cpu,vega,fiji,quadrok5000,geforce1080'
-//    String gpus = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji"
     testPlatforms.split(',').each()
     {
         def (os, gpu) = it.tokenize(':')
         tasks[os+"-"+gpu] = executeTestsImpl( os, gpu, 
             testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu, 
-            'dist/release/**/*' )        
+            deployFunc )        
     }
 
     parallel tasks
+}
+
+def deployImpl()
+{
+    archiveArtifacts artifacts: 'dist/release/**/*'
+    junit 'scripts/*.xml'
 }
 
 def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji", Boolean enableNotifications = true) 
@@ -125,7 +129,8 @@ def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,w
     {
         timestamps {
             executeBuilds( projectBranch, buildCmdLinux, buildCmdWin )
-            executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu )
+            executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu
+                , this.&deployImpl )
         }
     }
     finally 
