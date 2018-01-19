@@ -130,7 +130,10 @@ def postBuildImpl( String os )
     stash includes: 'dist/**/*', name: 'binaries'+os
     stash includes: 'Resources/**/*', name: 'resources'+os
     stash includes: 'scripts/**/*', name: 'scripts'+os   
-    stash includes: 'Tahoe/**/*.png', name: 'tahoe'+os   
+    if( isUnix() )
+        stash includes: 'tahoe/**/*.png', name: 'tahoe'+os   
+    else
+        stash includes: 'Tahoe/**/*.png', name: 'tahoe'+os   
 }
 
 def pretestImpl( String os )
