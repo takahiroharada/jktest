@@ -107,14 +107,22 @@ def checkoutImpl()
         git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
     }
 
+    dir('testdata')
+    {
+        git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/frunittestdata.git'
+    }
+
     if( isUnix() )
     {
         sh 'cp -r ./deps/contrib ./'
         sh 'ls contrib/lib/linux64'
+        sh 'cp -r ./testdata/tahoe ./'
+        sh 'cp -r ./testdata/unittestdata ./'
     }
     else
     {
-        bat 'xcopy /E/Y deps\\contrib contrib'
+        bat 'xcopy /E/Y testdata\\tahoe tahoe'
+        bat 'xcopy /E/Y testdata\\unittestdata unittestdata'
     }
 }
 
