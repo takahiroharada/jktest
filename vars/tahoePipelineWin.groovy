@@ -33,16 +33,14 @@ def executeBuilds(String projectBranch, String os, String commandLinux, String c
 def executeTestsImpl(String os, String gpu, 
     String testCommandCpu, String testCommandGpu, 
     String testCommandLinuxCpu, String testCommandLinuxGpu, 
-    def deployFunc )
+    def pretestFunc, def deployFunc )
 {
     def retNode = {
         node("${os} && ${gpu}")
         {
             stage("Test-" + gpu)
             {
-                unstash 'binaries'+os
-                unstash 'resources'+os
-                unstash 'scripts'+os
+                pretestFunc()
                 if( gpu == "cpu" )
                 {
                     if( isUnix() )
@@ -86,7 +84,7 @@ def executeBuilds(String projectBranch, String commandLinux, String commandWin,
 def executeTests(String testPlatforms, 
     String testCmdWinCpu, String testCmdWinGpu, 
     String testCmdLinuxCpu, String testCmdLinuxGpu,
-    def deployFunc )
+    def pretestFunc, def deployFunc )
 {
     def tasks = [:]
 
@@ -95,7 +93,7 @@ def executeTests(String testPlatforms,
         def (os, gpu) = it.tokenize(':')
         tasks[os+"-"+gpu] = executeTestsImpl( os, gpu, 
             testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu, 
-            deployFunc )        
+            pretestFunc, deployFunc )        
     }
 
     parallel tasks
@@ -127,6 +125,13 @@ def postBuildImpl( String os )
     stash includes: 'scripts/**/*', name: 'scripts'+os   
 }
 
+def pretestImpl( String os )
+{
+    unstash 'binaries'+os
+    unstash 'resources'+os
+    unstash 'scripts'+os
+}
+
 def deployImpl()
 {
     archiveArtifacts artifacts: 'dist/release/**/*'
@@ -148,7 +153,7 @@ def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,w
             executeBuilds( projectBranch, buildCmdLinux, buildCmdWin,
                 this.&checkoutImpl, this.&postBuildImpl )
             executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu,
-                this.&deployImpl )
+                this.&pretestImpl, this.&deployImpl )
         }
     }
     finally 
