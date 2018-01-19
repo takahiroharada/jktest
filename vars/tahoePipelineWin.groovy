@@ -82,12 +82,17 @@ def executeTestsImpl(String os, String gpu,
     return retNode
 }
 
-def executeBuilds(String projectBranch, String commandLinux, String commandWin, )
+def executeBuilds(String projectBranch, String commandLinux, String commandWin )
 {
     def tasks = [:]
 
-    tasks["winBuild"] = executeBuilds(projectBranch, "win10", commandLinux, commandWin )
-    tasks["ubuntuBuild"] = executeBuilds(projectBranch, "ubuntu", commandLinux, commandWin )
+    String oses = "win10,ubuntu"
+    oses.split(',').each()
+    {
+        String os = "${it}"
+        tasks["Build-"+os] = executeBuilds(projectBranch, os, commandLinux, commandWin )
+
+    }
 
     parallel tasks
 }
