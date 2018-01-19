@@ -121,8 +121,8 @@ def checkoutImpl()
     }
     else
     {
-        bat 'xcopy /E/Y testdata\\tahoe tahoe'
-        bat 'xcopy /E/Y testdata\\unittestdata unittestdata'
+        bat 'xcopy /E/Y testdata\\contrib contrib'
+        bat 'xcopy /E/Y testdata .'
     }
 }
 
