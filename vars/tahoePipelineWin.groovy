@@ -138,6 +138,7 @@ def postBuildImpl( String os )
 
 def pretestImpl( String os )
 {
+    cleanWs()
     unstash 'binaries'+os
     unstash 'resources'+os
     unstash 'scripts'+os
