@@ -40,7 +40,7 @@ def executeTestsImpl(String os, String gpu,
         {
             stage("Test-" + gpu)
             {
-                pretestFunc()
+                pretestFunc( os )
                 if( gpu == "cpu" )
                 {
                     if( isUnix() )
@@ -65,12 +65,11 @@ def executeTestsImpl(String os, String gpu,
     return retNode
 }
 
-def executeBuilds(String projectBranch, String commandLinux, String commandWin, 
+def executeBuilds(String oses, String commandLinux, String commandWin, 
     def checkoutFunc, def postbuildFunc )
 {
     def tasks = [:]
 
-    String oses = "win10,ubuntu"
     oses.split(',').each()
     {
         String os = "${it}"
@@ -158,7 +157,7 @@ def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,w
     try 
     {
         timestamps {
-            executeBuilds( projectBranch, buildCmdLinux, buildCmdWin,
+            executeBuilds( "win10,ubuntu", buildCmdLinux, buildCmdWin,
                 this.&checkoutImpl, this.&postBuildImpl )
             executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu,
                 this.&pretestImpl, this.&deployImpl )
