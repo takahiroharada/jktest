@@ -75,7 +75,7 @@ def executeTestsImpl(String os, String gpu,
             }
             stage("Artifact-"+gpu)
             {
-                deployFunc();
+                deployFunc()
             }
         }
     }
@@ -129,8 +129,8 @@ def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,w
     {
         timestamps {
             executeBuilds( projectBranch, buildCmdLinux, buildCmdWin )
-            executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu
-                , this.&deployImpl )
+            executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu,
+                this.&deployImpl )
         }
     }
     finally 
