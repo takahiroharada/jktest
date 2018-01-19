@@ -130,7 +130,7 @@ def postBuildImpl( String os )
     stash includes: 'dist/**/*', name: 'binaries'+os
     stash includes: 'Resources/**/*', name: 'resources'+os
     stash includes: 'scripts/**/*', name: 'scripts'+os   
-    stash includes: 'tahoe/**/*.png', name: 'tahoe'+os   
+    stash includes: 'Tahoe/**/*.png', name: 'tahoe'+os   
 }
 
 def pretestImpl( String os )
@@ -147,8 +147,7 @@ def deployImpl()
     junit 'scripts/*.xml'
 }
 
-def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji", 
-    String testOses = "win10,ubuntu", 
+def call(String testOses = "win10,ubuntu", String testPlatforms = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji", 
     String buildCmdLinux = './scripts/build/macos/buildTahoe.sh',
     String buildCmdWin = './scripts/build/win/buildTahoe.bat',
     
