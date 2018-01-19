@@ -149,7 +149,7 @@ def pretestImpl( String os )
 
 def deployImpl()
 {
-    archiveArtifacts artifacts: 'scripts/results/*', artifacts: 'scripts/*.xml'
+    archiveArtifacts artifacts: 'scripts/*.xml'
     junit 'scripts/*.xml'
 }
 
