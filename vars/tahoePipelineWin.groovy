@@ -1,4 +1,4 @@
-def executeBuildsImpl(String projectBranch, String os, String commandLinux, String commandWin,
+def executeBuildsImpl(String os, String commandLinux, String commandWin,
     def checkoutFunc, def postbuildFunc )
 {
     def retNode = {
@@ -73,7 +73,7 @@ def executeBuilds(String oses, String commandLinux, String commandWin,
     oses.split(',').each()
     {
         String os = "${it}"
-        tasks["Build-"+os] = executeBuildsImpl(projectBranch, os, commandLinux, commandWin, checkoutFunc, postbuildFunc )
+        tasks["Build-"+os] = executeBuildsImpl(os, commandLinux, commandWin, checkoutFunc, postbuildFunc )
 
     }
 
