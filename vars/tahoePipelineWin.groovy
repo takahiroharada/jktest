@@ -130,6 +130,7 @@ def postBuildImpl( String os )
     stash includes: 'dist/**/*', name: 'binaries'+os
     stash includes: 'Resources/**/*', name: 'resources'+os
     stash includes: 'scripts/**/*', name: 'scripts'+os   
+    stash includes: 'tahoe/**/*.png', name: 'tahoe'+os   
 }
 
 def pretestImpl( String os )
@@ -137,6 +138,7 @@ def pretestImpl( String os )
     unstash 'binaries'+os
     unstash 'resources'+os
     unstash 'scripts'+os
+    unstash 'tahoe'+os   
 }
 
 def deployImpl()
