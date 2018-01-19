@@ -1,25 +1,12 @@
-def executeBuilds(String projectBranch, String os, String commandLinux, String commandWin)
+def executeBuilds(String projectBranch, String os, String commandLinux, String commandWin,
+    def checkoutFunc, def postbuildFunc )
 {
     def retNode = {
 	node("${os} && git")
 	{
     	stage("Check-"+os)
         {
-            checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
-            dir('deps')
-            {
-                git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
-            }
-
-            if( isUnix() )
-            {
-                sh 'cp -r ./deps/contrib ./'
-                sh 'ls contrib/lib/linux64'
-            }
-            else
-            {
-                bat 'xcopy /E/Y deps\\contrib contrib'
-            }
+            checkoutFunc()
         }
         stage("Build-"+os) 
         {
@@ -36,9 +23,7 @@ def executeBuilds(String projectBranch, String os, String commandLinux, String c
             }
             finally {
             }
-            stash includes: 'dist/**/*', name: 'binaries'+os
-            stash includes: 'Resources/**/*', name: 'resources'+os
-            stash includes: 'scripts/**/*', name: 'scripts'+os
+            postbuildFunc( os )
         }
     }
     }
@@ -82,7 +67,8 @@ def executeTestsImpl(String os, String gpu,
     return retNode
 }
 
-def executeBuilds(String projectBranch, String commandLinux, String commandWin )
+def executeBuilds(String projectBranch, String commandLinux, String commandWin, 
+    def checkoutFunc, def postbuildFunc )
 {
     def tasks = [:]
 
@@ -90,7 +76,7 @@ def executeBuilds(String projectBranch, String commandLinux, String commandWin )
     oses.split(',').each()
     {
         String os = "${it}"
-        tasks["Build-"+os] = executeBuilds(projectBranch, os, commandLinux, commandWin )
+        tasks["Build-"+os] = executeBuilds(projectBranch, os, commandLinux, commandWin, checkoutFunc, postbuildFunc )
 
     }
 
@@ -115,6 +101,32 @@ def executeTests(String testPlatforms,
     parallel tasks
 }
 
+def checkoutImpl()
+{
+    checkOutBranchOrScm(projectBranch, 'https://github.com/takahiroharada/firerender.git')
+    dir('deps')
+    {
+        git credentialsId: '6fc6822a-2c5f-437d-8082-71aa452abafe', url: 'https://github.com/amdadvtech/firerenderdeps.git'
+    }
+
+    if( isUnix() )
+    {
+        sh 'cp -r ./deps/contrib ./'
+        sh 'ls contrib/lib/linux64'
+    }
+    else
+    {
+        bat 'xcopy /E/Y deps\\contrib contrib'
+    }
+}
+
+def postBuildImpl( String os )
+{
+    stash includes: 'dist/**/*', name: 'binaries'+os
+    stash includes: 'Resources/**/*', name: 'resources'+os
+    stash includes: 'scripts/**/*', name: 'scripts'+os   
+}
+
 def deployImpl()
 {
     archiveArtifacts artifacts: 'dist/release/**/*'
@@ -133,7 +145,8 @@ def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,w
     try 
     {
         timestamps {
-            executeBuilds( projectBranch, buildCmdLinux, buildCmdWin )
+            executeBuilds( projectBranch, buildCmdLinux, buildCmdWin,
+                this.&checkoutImpl, this.&postBuildImpl )
             executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu,
                 this.&deployImpl )
         }
