@@ -155,8 +155,8 @@ def call(String testOses = "win10,ubuntu", String testPlatforms = "win10:cpu,win
     String buildCmdLinux = './scripts/build/macos/buildTahoe.sh',
     String buildCmdWin = './scripts/build/win/buildTahoe.bat',
     
-    String testCmdWinCpu = './scripts/test/win/tahoeTestsCpu.bat',
-    String testCmdWinGpu = './scripts/test/win/tahoeTestsGpu.bat',
+    String testCmdWinCpu = './scripts/test/win/tahoeMinTestsCpu.bat',
+    String testCmdWinGpu = './scripts/test/win/tahoeMinTestsGpu.bat',
     String testCmdLinuxCpu = './scripts/test/macos/tahoeTestsCpu.sh',
     String testCmdLinuxGpu = './scripts/test/macos/tahoeTestsGpu.sh') 
 {
