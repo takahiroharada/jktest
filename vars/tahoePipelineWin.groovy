@@ -1,4 +1,4 @@
-def executeBuilds(String projectBranch, String os, String commandLinux, String commandWin,
+def executeBuildsImpl(String projectBranch, String os, String commandLinux, String commandWin,
     def checkoutFunc, def postbuildFunc )
 {
     def retNode = {
@@ -73,7 +73,7 @@ def executeBuilds(String oses, String commandLinux, String commandWin,
     oses.split(',').each()
     {
         String os = "${it}"
-        tasks["Build-"+os] = executeBuilds(projectBranch, os, commandLinux, commandWin, checkoutFunc, postbuildFunc )
+        tasks["Build-"+os] = executeBuildsImpl(projectBranch, os, commandLinux, commandWin, checkoutFunc, postbuildFunc )
 
     }
 
@@ -145,19 +145,20 @@ def deployImpl()
     junit 'scripts/*.xml'
 }
 
-def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji", Boolean enableNotifications = true) 
-{
-    String buildCmdLinux = './scripts/build/macos/buildTahoe.sh'
-    String buildCmdWin = './scripts/build/win/buildTahoe.bat'
+def call(String projectBranch='', String testPlatforms = "win10:cpu,win10:vega,win10:fiji,ubuntu:fiji", 
+    String testOses = "win10,ubuntu", 
+    String buildCmdLinux = './scripts/build/macos/buildTahoe.sh',
+    String buildCmdWin = './scripts/build/win/buildTahoe.bat',
     
-    String testCmdWinCpu = './scripts/test/win/tahoeTestsCpu.bat'
-    String testCmdWinGpu = './scripts/test/win/tahoeTestsGpu.bat'
-    String testCmdLinuxCpu = './scripts/test/macos/tahoeTestsCpu.sh'
-    String testCmdLinuxGpu = './scripts/test/macos/tahoeTestsGpu.sh'
+    String testCmdWinCpu = './scripts/test/win/tahoeTestsCpu.bat',
+    String testCmdWinGpu = './scripts/test/win/tahoeTestsGpu.bat',
+    String testCmdLinuxCpu = './scripts/test/macos/tahoeTestsCpu.sh',
+    String testCmdLinuxGpu = './scripts/test/macos/tahoeTestsGpu.sh') 
+{
     try 
     {
         timestamps {
-            executeBuilds( "win10,ubuntu", buildCmdLinux, buildCmdWin,
+            executeBuilds( testOses, buildCmdLinux, buildCmdWin,
                 this.&checkoutImpl, this.&postBuildImpl )
             executeTests(testPlatforms, testCmdWinCpu, testCmdWinGpu, testCmdLinuxCpu, testCmdLinuxGpu,
                 this.&pretestImpl, this.&deployImpl )
