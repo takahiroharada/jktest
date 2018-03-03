@@ -60,7 +60,7 @@ def call(String testOses = "macos")
 {
     try 
     {
-        String buildCmdMacOs = './scripts/macos/buildAndRunMetal.sh',
+        String buildCmdMacOs = './scripts/macos/buildAndRunMetal.sh'
         timestamps 
         {
             executeBuilds( testOses, buildCmdMacOs,
