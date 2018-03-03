@@ -39,7 +39,7 @@ def executeBuilds(String oses, String commandLinux,
     oses.split(',').each()
     {
         String os = "${it}"
-        tasks["Build-"+os] = executeBuildsImpl(os, commandLinux, commandWin, checkoutFunc, postbuildFunc )
+        tasks["Build-"+os] = executeBuildsImpl(os, commandLinux, "", checkoutFunc, postbuildFunc )
 
     }
 
